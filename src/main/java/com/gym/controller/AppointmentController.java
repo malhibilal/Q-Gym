@@ -47,6 +47,54 @@ public class AppointmentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
+
+    @PutMapping("/update/{appointmentId}")
+    public ResponseEntity<Map<String, Object>> updateAppointment(
+            @PathVariable Long appointmentId,
+            @RequestBody Appointment updatedAppointment
+    ) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+
+            if (appointment == null) {
+                response.put("message", "Appointment not found with ID: " + appointmentId);
+                response.put("data", null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            updatedAppointment.setId(appointmentId); // Set the ID for the updated appointment
+
+            // Call the service method to update the appointment
+            Appointment updated = appointmentService.updateAppointment(updatedAppointment);
+
+            response.put("message", "Appointment updated successfully.");
+            response.put("data", updated);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (TrainerNotAvailableException e) {
+            response.put("message", "Trainer not available at the specified date and time.");
+            response.put("data", null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @DeleteMapping("/delete/{appointmentId}")
+    public ResponseEntity<Map<String, String>> deleteAppointment(@PathVariable Long appointmentId) {
+        Map<String, String> response = new HashMap<>();
+
+        try {
+            appointmentService.deleteAppointment(appointmentId);
+            response.put("message", "Appointment deleted successfully.");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (EntityNotFoundException e) {
+            response.put("message", "Appointment not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+
+
+
 }
 
 
