@@ -96,7 +96,8 @@ public class AppointmentService {
 
     private boolean isTrainerAvailable(Long trainerId, LocalDateTime dateTime) {
         // Query the trainer's appointments for the specified trainerId and dateTime
-        List<Appointment> trainerAppointments = appointmentRepository.findByTrainerIdAndDateTime(trainerId, dateTime);
+        List<Appointment> trainerAppointments = appointmentRepository.
+                findByTrainerIdAndDateTime(trainerId, dateTime);
 
         // Check if there are any existing appointments for the trainer at the same dateTime
         return trainerAppointments.isEmpty();
@@ -105,6 +106,22 @@ public class AppointmentService {
 
     public Appointment getAppointmentById(Long appointmentId) {
         return appointmentRepository.findAppointmentById(appointmentId);
+    }
+
+    public List<Appointment> getAppointmentsByUser(User user) {
+        List<Appointment> appointments = appointmentRepository.findByUser(user);
+
+        // You can add additional logic here if needed
+
+        return appointments;
+    }
+
+    public List<Appointment> getAppointmentsByTrainer(Trainer trainer) {
+        List<Appointment> appointments = appointmentRepository.findByTrainer(trainer);
+
+        // You can add additional logic here if needed
+
+        return appointments;
     }
 }
 

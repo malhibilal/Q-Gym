@@ -2,6 +2,7 @@ package com.gym.repository;
 
 import com.gym.entities.Appointment;
 import com.gym.entities.Trainer;
+import com.gym.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,5 +19,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByTrainerIdAndDateTime(Long trainerId, LocalDateTime dateTime);
 
     Appointment findAppointmentById(Long appointmentId);
+
+    List<Appointment> findByUser(User user);
+
+    List<Appointment> findByTrainer(Trainer trainer);
 }
 

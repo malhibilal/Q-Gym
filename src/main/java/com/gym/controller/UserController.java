@@ -1,9 +1,12 @@
 package com.gym.controller;
 
+import com.gym.entities.Appointment;
 import com.gym.entities.User;
 import com.gym.entities.UserNotFoundException;
 import com.gym.repository.UserRepository;
+import com.gym.service.AppointmentService;
 import com.gym.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,10 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private AppointmentService appointmentService;
 
 
 
@@ -78,6 +85,22 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
+    }
+    @GetMapping("/appointment/{userId}")
+    public ResponseEntity<List<Appointment>> getAppointmentsByUser(@PathVariable Long userId) {
+        try {
+            // Retrieve the user by ID
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
+
+            // Retrieve all appointments associated with the user
+            List<Appointment> userAppointments = appointmentService.getAppointmentsByUser(user);
+
+            return ResponseEntity.status(HttpStatus.OK).body(userAppointments);
+        } catch (EntityNotFoundException e) {
+            // Handle the case where the user is not found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
 
